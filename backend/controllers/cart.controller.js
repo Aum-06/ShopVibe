@@ -68,7 +68,7 @@ const getCartProducts=async(req,res)=>{
             const item=req.user.cartItems.find(item=>item.product==product._id);
             return {...product,quantity:item.quantity};
         });
-        res.json({cartItems}); 
+        res.json({cart:cartItems}); 
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });
     }

@@ -1,15 +1,25 @@
 import React from "react";
-import { Sun, Moon, ShoppingCart, UserPlus,Lock,LogOut,LogIn } from "lucide-react";
-import { Link,useNavigate } from "react-router-dom";
+import {
+  Sun,
+  Moon,
+  ShoppingCart,
+  UserPlus,
+  Lock,
+  LogOut,
+  LogIn,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import useThemeStore from "../stores/useThemeStore"; // Import the theme store
 import useUserStore from "../stores/useUserStore";
 import { useEffect } from "react";
+import useCartStore from "../stores/useCartStore";
 
 const Navbar = () => {
   const { isDarkMode, toggleDarkMode } = useThemeStore(); // Access dark mode state and toggle function
   const navigate = useNavigate();
-  const {user,logout,checkingAuth,checkAuth}=useUserStore();
-  const isAdmin =user?.role==="admin";
+  const { user, logout, checkingAuth, checkAuth } = useUserStore();
+  const isAdmin = user?.role === "admin";
+  const { cart } = useCartStore();
   //  // More detailed debugging
   //  console.log({
   //   userObject: user,
@@ -20,8 +30,8 @@ const Navbar = () => {
   // });
   useEffect(() => {
     checkAuth();
-  }, []); 
-  const handleLogout =async () => {
+  }, []);
+  const handleLogout = async () => {
     await logout();
     navigate("/login"); // Redirect to login page after logout
   };
@@ -65,9 +75,11 @@ const Navbar = () => {
                 className="flex items-center justify-center px-3 py-2 rounded-md transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white relative group"
               >
                 <ShoppingCart size={18} />
-                <span className="absolute -top-0.5 -left-0.5 w-5 h-5 rounded-full bg-red-600 text-xs text-white flex items-center justify-center group-hover:bg-red-700 dark:group-hover:bg-red-800">
-                  3
-                </span>
+                {cart?.length > 0 && (
+                  <span className="absolute -top-0.5 -left-0.5 w-5 h-5 rounded-full bg-red-600 text-xs text-white flex items-center justify-center group-hover:bg-red-700 dark:group-hover:bg-red-800">
+                    {cart.length}
+                  </span>
+                )}
                 <span className="dark:text-white font-medium ml-2">Cart</span>
               </Link>
             )}
@@ -78,7 +90,9 @@ const Navbar = () => {
                 className="items-center justify-center px-3 py-2 rounded-md transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white relative group flex "
               >
                 <Lock size={18} />
-                <span className="ml-2 dark:text-white font-medium">Dashboard</span>
+                <span className="ml-2 dark:text-white font-medium">
+                  Dashboard
+                </span>
               </Link>
             )}
             {user ? (
@@ -101,7 +115,7 @@ const Navbar = () => {
 
                 <Link
                   to={"/login"}
-                  className="transition-colors duration-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-inherit px-4 py-2 rounded-md text-sm font-medium flex gap-2 items-center"  
+                  className="transition-colors duration-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-inherit px-4 py-2 rounded-md text-sm font-medium flex gap-2 items-center"
                 >
                   <LogIn size={18} />
                   Login
