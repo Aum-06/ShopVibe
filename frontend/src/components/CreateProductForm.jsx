@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Loader, Upload, PlusCircle } from "lucide-react";
 import useProductStore from "../stores/useProductStore";
 
-const categories = ["jean", "t-shirt", "shoes", "glasses", "jacket", "bag"];
+const categories = ["jeans", "t-shirts", "shoes", "glasses", "jackets", "bags"];
 
 const CreateProductForm = () => {
   const [newProduct, setNewProduct] = useState({

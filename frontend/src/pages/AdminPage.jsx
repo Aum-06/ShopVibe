@@ -1,9 +1,10 @@
-import {React,useState} from 'react'
-import { motion } from 'framer-motion'
-import { PlusCircle, ShoppingBasket, BarChart } from 'lucide-react'
-import CreateProductForm from '../components/CreateProductForm';
-import ProductsList from '../components/ProductList';
-import AnalyticsTab from '../components/AnalyticsTab';
+import { React, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { PlusCircle, ShoppingBasket, BarChart } from "lucide-react";
+import CreateProductForm from "../components/CreateProductForm";
+import ProductsList from "../components/ProductList";
+import AnalyticsTab from "../components/AnalyticsTab";
+import useProductStore from "../stores/useProductStore";
 
 const tabs = [
   { id: "create", label: "Create Product", icon: PlusCircle },
@@ -16,18 +17,24 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 const AdminPage = () => {
-    const [activeTab, setActiveTab] = useState("create");
+  const [activeTab, setActiveTab] = useState("create");
+  const { fetchAllProducts } = useProductStore();
+
+  useEffect(() => {
+    fetchAllProducts();
+  }, [fetchAllProducts]);
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8 pt-24 bg-gray-100 dark:bg-gray-900">
       <motion.div
@@ -36,14 +43,14 @@ const AdminPage = () => {
         variants={container}
         className="sm:mx-auto sm:w-full sm:max-w-md mb-6"
       >
-        <motion.h2 
+        <motion.h2
           variants={item}
           className="text-3xl mt-4 font-extrabold text-center text-gray-900 dark:text-white"
         >
           Admin Dashboard
         </motion.h2>
-        
-        <motion.div 
+
+        <motion.div
           variants={container}
           className="flex flex-wrap sm:flex-nowrap gap-4 mt-4 justify-center items-center"
         >
@@ -62,11 +69,11 @@ const AdminPage = () => {
           ))}
         </motion.div>
       </motion.div>
-      {activeTab === "create" && <CreateProductForm />} 
-      {activeTab === "products" && <ProductsList />}      
+      {activeTab === "create" && <CreateProductForm />}
+      {activeTab === "products" && <ProductsList />}
       {activeTab === "analytics" && <AnalyticsTab />}
     </div>
-  )
-}
+  );
+};
 
-export default AdminPage
+export default AdminPage;

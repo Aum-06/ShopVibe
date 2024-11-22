@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    isFeaturd: {
+    isFeatured: {
       type: Boolean,
       default: false,
     },
