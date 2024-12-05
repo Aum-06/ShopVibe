@@ -55,6 +55,45 @@ const useCartStore = create((set, get) => ({
     }
     set({ subtotal, total });
   },
+  removeFromCart: async (productId) => {
+    try {
+      // Send DELETE request to the server
+      const response = await axiosInstance.delete('/cart', { data: { productId } });
+      console.log('Delete response:', response);
+  
+      // Update the local state by removing the item
+      set((prevState) => ({
+        cart: prevState.cart.filter((item) => item._id !== productId),
+      }));
+  
+      // Recalculate totals after removal
+      get().calculateTotalAmount();
+  
+      // Show success message
+      toast.success("Product removed from cart");
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  },
+  
+  updateQuantity: async (productId, quantity) => {
+try {
+  if (quantity === 0) {
+    get().removeFromCart(productId);
+    return;
+  }
+
+  await axios.put(`/cart/${productId}`, { quantity });
+  set((prevState) => ({
+    cart: prevState.cart.map((item) => (item._id === productId ? { ...item, quantity } : item)),
+  }));
+  get().calculateTotals();
+  toast.success("Product quantity updated");
+} catch (error) {
+  toast.error(error.response.data.message || "Something went wrong");
+}
+	},
 }));
 
 export default useCartStore;

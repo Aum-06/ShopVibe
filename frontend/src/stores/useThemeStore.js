@@ -5,11 +5,10 @@ const useThemeStore = create((set) => ({
   toggleDarkMode: () => {
     set((state) => {
       const newDarkModeState = !state.isDarkMode;
-      // Apply/remove the 'dark' class to <html> element
       if (newDarkModeState) {
-        document.documentElement.classList.add('dark'); // Enables dark mode
+        document.documentElement.classList.add('dark'); 
       } else {
-        document.documentElement.classList.remove('dark'); // Disables dark mode
+        document.documentElement.classList.remove('dark'); 
       }
       return { isDarkMode: newDarkModeState };
     });

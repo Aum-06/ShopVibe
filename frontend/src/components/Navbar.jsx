@@ -15,19 +15,12 @@ import { useEffect } from "react";
 import useCartStore from "../stores/useCartStore";
 
 const Navbar = () => {
-  const { isDarkMode, toggleDarkMode } = useThemeStore(); // Access dark mode state and toggle function
+  const { isDarkMode, toggleDarkMode } = useThemeStore();
   const navigate = useNavigate();
   const { user, logout, checkingAuth, checkAuth } = useUserStore();
   const isAdmin = user?.role === "admin";
   const { cart } = useCartStore();
-  //  // More detailed debugging
-  //  console.log({
-  //   userObject: user,
-  //   roleValue: user?.role,
-  //   roleType: user?.role ? typeof user.role : 'no role',
-  //   isAdminValue: isAdmin,
-  //   checkingAuth
-  // });
+  
   useEffect(() => {
     checkAuth();
   }, []);
@@ -54,7 +47,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-6">
             {/* Dark Mode Toggle */}
             <button
-              onClick={toggleDarkMode} // Use the toggle function from the theme store
+              onClick={toggleDarkMode} 
               className="p-2 rounded-lg transition-all duration-300 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-yellow-400 hover:opacity-80"
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
