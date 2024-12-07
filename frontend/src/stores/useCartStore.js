@@ -8,6 +8,32 @@ const useCartStore = create((set, get) => ({
   coupon: null,
   total: 0,
   subtotal: 0,
+  isCouponAplied: false,  
+
+  
+	getMyCoupon: async () => {
+		try {
+			const response = await axiosInstance.get("/coupons");
+			set({ coupon: response.data });
+		} catch (error) {
+			console.error("Error fetching coupon:", error);
+		}
+	},
+	applyCoupon: async (code) => {
+		try {
+			const response = await axiosInstance.post("/coupons/validate", { code });
+			set({ coupon: response.data, isCouponApplied: true });
+			get().calculateTotals();
+			toast.success("Coupon applied successfully");
+		} catch (error) {
+			toast.error(error.response?.data?.message || "Failed to apply coupon");
+		}
+	},
+	removeCoupon: () => {
+		set({ coupon: null, isCouponApplied: false });
+		get().calculateTotals();
+		toast.success("Coupon removed");
+	},
 
   getCartItems: async () => {
     try {
@@ -20,6 +46,9 @@ const useCartStore = create((set, get) => ({
       toast.error(error.response.data.message || "Something went wrong");
     }
   },
+  clearCart: async () => {
+		set({ cart: [], coupon: null, total: 0, subtotal: 0 });
+	},
   addToCart: async (product) => {
     try {
       await axiosInstance.post("/cart", { productId: product._id });
@@ -78,22 +107,35 @@ const useCartStore = create((set, get) => ({
   },
   
   updateQuantity: async (productId, quantity) => {
-try {
-  if (quantity === 0) {
-    get().removeFromCart(productId);
-    return;
-  }
-
-  await axios.put(`/cart/${productId}`, { quantity });
-  set((prevState) => ({
-    cart: prevState.cart.map((item) => (item._id === productId ? { ...item, quantity } : item)),
-  }));
-  get().calculateTotals();
-  toast.success("Product quantity updated");
-} catch (error) {
-  toast.error(error.response.data.message || "Something went wrong");
-}
-	},
+    try {
+      // If quantity is 0 or less, remove the item from the cart
+      if (quantity <= 0) {
+        get().removeFromCart(productId);
+        return;
+      }
+  
+      // Send a request to update the quantity in the backend
+      const response = await axiosInstance.put(`/cart/${productId}`, { quantity });
+      console.log("Update Quantity Response:", response.data);
+  
+      // Update the local cart state
+      set((prevState) => ({
+        cart: prevState.cart.map((item) =>
+          item._id === productId ? { ...item, quantity } : item
+        ),
+      }));
+  
+      // Recalculate totals
+      get().calculateTotalAmount();
+  
+      // Notify the user
+      toast.success("Product quantity updated");
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  },
+  
 }));
 
 export default useCartStore;

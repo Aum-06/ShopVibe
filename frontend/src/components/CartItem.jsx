@@ -4,6 +4,18 @@ import useCartStore from "../stores/useCartStore";
 const CartItem = ({ item }) => {
   const { removeFromCart, updateQuantity } = useCartStore();
 
+  const handleDecreaseQuantity = () => {
+    if (item.quantity === 1) {
+      removeFromCart(item._id); // Remove item if quantity is 1 and minus is clicked
+    } else {
+      updateQuantity(item._id, item.quantity - 1);
+    }
+  };
+
+  const handleIncreaseQuantity = () => {
+    updateQuantity(item._id, item.quantity + 1);
+  };
+
   return (
     <div className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md hover:shadow-lg transition-shadow duration-300 md:p-6">
       <div className="space-y-4 md:flex md:items-center md:gap-6">
@@ -23,14 +35,14 @@ const CartItem = ({ item }) => {
         <div className="flex items-center gap-3 md:gap-4">
           <button
             className="flex h-7 w-7 items-center justify-center rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-300 hover:bg-gray-200 focus:ring-2 focus:ring-blue-500"
-            onClick={() => updateQuantity(item._id, Math.max(item.quantity - 1, 1))}
+            onClick={handleDecreaseQuantity}
           >
             <Minus className="h-4 w-4" />
           </button>
           <p className="text-sm font-medium text-gray-900 dark:text-white">{item.quantity}</p>
           <button
             className="flex h-7 w-7 items-center justify-center rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-300 hover:bg-gray-200 focus:ring-2 focus:ring-blue-500"
-            onClick={() => updateQuantity(item._id, item.quantity + 1)}
+            onClick={handleIncreaseQuantity}
           >
             <Plus className="h-4 w-4" />
           </button>
